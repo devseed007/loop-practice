@@ -1,0 +1,166 @@
+# **UI Prototype Proposal**
+
+## **Project Overview**
+
+This proposal outlines the development of a **user interface (UI) prototype** featuring a dynamic data table with a details panel, toolbar controls, notification and dark mode toggles, and an edit modal. The design focuses on usability, modern UI/UX principles, and flexibility to support efficient data management and interaction.
+
+---
+
+## **Objectives**
+
+* Develop a responsive and intuitive UI with a clean grey/dark theme and light mode toggle.
+* Display tabular data with infinite scrolling to handle large datasets smoothly.
+* Provide a details panel alongside the table to display extended information for the selected row.
+* Include category buttons to switch between multiple predefined data sets.
+* Add toolbar controls for search, add, edit, delete, and refresh operations.
+* Integrate a notification bell icon with badge for alerts.
+* Implement a modal popup to edit a selected row’s data with save and cancel options.
+
+---
+
+## **Key Features**
+
+### 1. **Category Buttons**
+
+* Four buttons aligned at the top-left to switch the displayed dataset.
+* Active button visually highlighted with a lighter grey background.
+* Accessible with keyboard navigation and ARIA roles for screen readers.
+
+### 2. **Toolbar**
+
+* Located above the data table.
+* Includes a search input for filtering rows dynamically.
+* Action buttons: Add, Edit, Delete, Refresh.
+* Edit button disabled until a row is selected.
+
+### 3. **Data Table**
+
+* Displays rows of data with columns: ID, Name, Status.
+* Infinite scroll loads more rows as the user scrolls down.
+* Rows highlight on hover; selected row is distinctly highlighted.
+* Clicking a row selects it and updates the details panel.
+
+### 4. **Details Panel**
+
+* Positioned adjacent to the table at the same horizontal level.
+* Displays detailed information in four columns:
+
+  * ID, Name, Status, Email, Phone.
+* Updates dynamically based on selected row.
+
+### 5. **Notification Bell Icon**
+
+* Located top-right in the header.
+* Includes a red badge to indicate the number of unread notifications.
+
+### 6. **Dark Mode Toggle**
+
+* Allows users to switch between dark and light themes.
+* Smooth transition of colors for accessibility and user comfort.
+
+### 7. **Edit Modal Popup**
+
+* Triggered by clicking the Edit button with a row selected.
+* Allows editing the **Name** field of the selected row.
+* Contains **Save** and **Close** buttons.
+* Save updates the table and details panel immediately.
+* Modal can be dismissed by clicking outside or using Close.
+
+---
+
+## **Technical Details**
+
+* **Technologies:** HTML5, CSS3, JavaScript (vanilla)
+* **Accessibility:** Keyboard navigable, ARIA roles/labels included.
+* **Responsive Design:** Layout adapts to viewport size.
+* **Performance:** Infinite scroll supports efficient rendering of large data.
+* **Maintainability:** Modular code with clear separation of UI components.
+
+---
+
+## **User Experience Flow**
+
+1. User selects a dataset via category buttons.
+2. Table updates with the selected data set’s entries.
+3. User searches or scrolls through data; more rows load automatically.
+4. Selecting a row displays detailed info in the side panel.
+5. Clicking Edit opens a popup to modify the Name field.
+6. Save applies changes; Close cancels editing.
+7. User can toggle dark mode or monitor notifications via icons.
+
+---
+
+## **Benefits**
+
+* Streamlined data browsing and editing in one interface.
+* Reduces clutter by combining summary and detail views.
+* Enhances productivity with intuitive controls and feedback.
+* Supports accessibility and theming preferences.
+* Easily extendable for future features such as multi-column editing or export.
+
+---
+
+## **Next Steps**
+
+* Review prototype with stakeholders.
+* Incorporate feedback and expand features as needed.
+* Implement backend integration for real data operations.
+* Perform usability testing and accessibility audits.
+* Deploy UI as part of the larger application framework.
+
+
+Technologies: React.js (with functional components and hooks), CSS Modules or Styled Components for styling.
+
+Advantages of React:
+
+Component-based architecture enabling reusable, modular UI elements.
+
+Efficient DOM updates through Virtual DOM for better performance.
+
+State management using React hooks (useState, useEffect) for dynamic interactivity.
+
+Easier maintenance and scalability as the app grows.
+
+Compatibility with popular UI libraries and tools for extended functionality.
+
+Styling and Theming:
+
+Implement dark mode toggle using React state and CSS variables or styled themes.
+
+Styling scoped to components to avoid global CSS conflicts.
+
+Infinite Scroll:
+
+Implemented via React state and event listeners on scroll containers.
+
+Accessibility:
+
+Use React’s support for ARIA attributes and keyboard event handling.
+
+Modal Implementation:
+
+Popup edit modal as a controlled React component with props for visibility and data.
+
+Development Considerations
+Refactor the current static HTML structure into React components:
+
+<CategoryButtons />
+
+<Toolbar />
+
+<DataTable />
+
+<DetailsPanel />
+
+<NotificationBell />
+
+<DarkModeToggle />
+
+<EditModal />
+
+Manage data sets and UI states (selected row, search query, dark mode) with React state hooks.
+
+Use React context or a state management library (if needed) for cross-component state sharing.
+
+
+

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Prototype with Tailwind CSS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  />
+</head>
+<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col">
+  <!-- Header with category buttons and icons -->
+  <header class="flex justify-between items-center bg-gray-800 px-6 py-3">
+    <div class="flex space-x-3" role="tablist" aria-label="Dataset Selection">
+      <button
+        class="bg-gray-700 px-4 py-2 rounded text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-gray-500"
+        data-set="set1" aria-selected="true" role="tab"
+      >Set 1</button>
+      <button
+        class="bg-gray-700 px-4 py-2 rounded text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-set="set2" aria-selected="false" role="tab"
+      >Set 2</button>
+      <button
+        class="bg-gray-700 px-4 py-2 rounded text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-set="set3" aria-selected="false" role="tab"
+      >Set 3</button>
+      <button
+        class="bg-gray-700 px-4 py-2 rounded text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-set="set4" aria-selected="false" role="tab"
+      >Set 4</button>
+    </div>
+    <div class="flex space-x-6 text-xl text-gray-400">
+      <button
+        class="relative focus:outline-none"
+        aria-label="Notifications"
+        id="notification-btn"
+      >
+        <i class="fa-regular fa-bell"></i>
+        <span
+          id="notification-badge"
+          class="absolute top-0 right-0 -mt-1 -mr-2 bg-red-600 text-xs rounded-full px-1"
+          >3</span
+        >
+      </button>
+      <button
+        id="dark-mode-toggle"
+        class="focus:outline-none"
+        aria-label="Toggle Dark Mode"
+      >
+        <i class="fa-regular fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main content area -->
+  <main class="flex flex-1 p-6 gap-6">
+    <!-- Left panel with toolbar and table -->
+    <section class="flex flex-col flex-1 bg-gray-800 rounded-lg overflow-hidden">
+      <!-- Toolbar -->
+      <div
+        class="flex items-center space-x-2 bg-gray-700 px-4 py-3"
+        role="toolbar"
+        aria-label="Table Controls"
+      >
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Search..."
+          class="flex-1 px-3 py-2 rounded bg-gray-900 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Search table"
+        />
+        <button
+          id="btn-add"
+          class="px-3 py-2 rounded bg-gray-600 hover:bg-gray-500 disabled:opacity-50"
+          aria-label="Add"
+        >
+          Add
+        </button>
+        <button
+          id="btn-edit"
+          class="px-3 py-2 rounded bg-gray-600 hover:bg-gray-500 disabled:opacity-50"
+          aria-label="Edit"
+          disabled
+        >
+          Edit
+        </button>
+        <button
+          id="btn-delete"
+          class="px-3 py-2 rounded bg-gray-600 hover:bg-gray-500 disabled:opacity-50"
+          aria-label="Delete"
+          disabled
+        >
+          Delete
+        </button>
+        <button
+          id="btn-refresh"
+          class="px-3 py-2 rounded bg-gray-600 hover:bg-gray-500"
+          aria-label="Refresh"
+        >
+          Refresh
+        </button>
+      </div>
+      <!-- Table container -->
+      <div
+        id="table-container"
+        class="flex-1 overflow-y-auto bg-gray-900"
+        tabindex="0"
+        aria-label="Data table scroll area"
+      >
+        <table class="w-full table-fixed border-collapse text-left text-gray-300">
+          <caption class="sr-only" id="table-desc"
+            >List of users with ID, Name, and Status</caption
+          >
+          <thead class="sticky top-0 bg-gray-700 text-gray-200">
+            <tr>
+              <th class="px-4 py-3 border-b border-gray-600 w-1/6">ID</th>
+              <th class="px-4 py-3 border-b border-gray-600 w-3/6">Name</th>
+              <th class="px-4 py-3 border-b border-gray-600 w-2/6">Status</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Details panel -->
+    <!-- <aside
+      class="w-80 bg-gray-800 rounded-lg p-5 grid grid-cols-2 gap-x-8 gap-y-4"
+      aria-label="Details Panel"
+    >
+      <p id="no-selection-text" class="col-span-2">
+        Select a row from the table to see details here.
+      </p>
+      <div
+        id="details-content"
+        class="hidden col-span-2 grid grid-cols-2 gap-4"
+      >
+        <div>
+          <span class="font-semibold">ID:</span> <span id="detail-id"></span>
+        </div>
+        <div>
+          <span class="font-semibold">Name:</span> <span id="detail-name"></span>
+        </div>
+        <div>
+          <span class="font-semibold">Status:</span>
+          <span id="detail-status"></span>
+        </div>
+        <div>
+          <span class="font-semibold">Email:</span>
+          <span id="detail-email"></span>
+        </div>
+        <div>
+          <span class="font-semibold">Phone:</span>
+          <span id="detail-phone"></span>
+        </div>
+      </div>
+    </aside> -->
+  <!-- Details panel -->
+<aside
+  class="w-80 bg-gray-800 rounded-lg p-5 grid grid-cols-4 gap-x-4 gap-y-3"
+  aria-label="Details Panel"
+>
+  <p id="no-selection-text" class="col-span-4 text-center text-gray-500">
+    Select a row from the table to see details here.
+  </p>
+
+  <div id="details-content" class="hidden col-span-4 grid grid-cols-4 gap-4">
+    <div>
+      <span class="font-semibold block mb-1">ID:</span>
+      <span id="detail-id" class="text-gray-300"></span>
+    </div>
+    <div>
+      <span class="font-semibold block mb-1">Name:</span>
+      <span id="detail-name" class="text-gray-300"></span>
+    </div>
+    <div>
+      <span class="font-semibold block mb-1">Status:</span>
+      <span id="detail-status" class="text-gray-300"></span>
+    </div>
+    <div>
+      <span class="font-semibold block mb-1">Email:</span>
+      <span id="detail-email" class="text-gray-300 break-words"></span>
+    </div>
+
+    <div>
+      <span class="font-semibold block mb-1">Phone:</span>
+      <span id="detail-phone" class="text-gray-300"></span>
+    </div>
+    <!-- If you want to add 3 more detail fields to fill 4 columns in second row, you can add them here -->
+  </div>
+</aside>
+
+</main>
+
+  <!-- Edit Modal -->
+  <div
+    id="edit-modal"
+    class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-modal-title"
+  >
+    <div
+      class="bg-gray-800 rounded-lg p-6 w-80 text-gray-300 flex flex-col gap-4"
+    >
+      <h2 id="edit-modal-title" class="text-xl font-semibold">Edit Name</h2>
+      <input
+        type="text"
+        id="edit-input"
+        class="px-3 py-2 rounded bg-gray-900 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="Edit Name"
+      />
+      <div class="flex justify-end space-x-4">
+        <button
+          id="btn-close-edit"
+          class="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500"
+        >
+          Close
+        </button>
+        <button
+          id="btn-save-edit"
+          class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample datasets
+    const datasets = {
+      set1: [
+        {
+          id: 1,
+          name: "Alice Smith",
+          status: "Active",
+          email: "alice@example.com",
+          phone: "555-1234",
+        },
+        {
+          id: 2,
+          name: "Bob Johnson",
+          status: "Pending",
+          email: "bob@example.com",
+          phone: "555-2345",
+        },
+        {
+          id: 3,
+          name: "Carol King",
+          status: "Inactive",
+          email: "carol@example.com",
+          phone: "555-3456",
+        },
+        // More for infinite scroll demo
+        ...Array.from({ length: 30 }, (_, i) => ({
+          id: 4 + i,
+          name: "User " + (4 + i),
+          status: ["Active", "Pending", "Inactive"][i % 3],
+          email: "user" + (4 + i) + "@example.com",
+          phone: "555-" + (4000 + i),
+        })),
+      ],
+      set2: [
+        {
+          id: 100,
+          name: "David Lee",
+          status: "Active",
+          email: "david@example.com",
+          phone: "555-4567",
+        },
+        {
+          id: 101,
+          name: "Eva Long",
+          status: "Inactive",
+          email: "eva@example.com",
+          phone: "555-5678",
+        },
+      ],
+      set3: [
+        {
+          id: 200,
+          name: "Frank Wright",
+          status: "Pending",
+          email: "frank@example.com",
+          phone: "555-6789",
+        },
+      ],
+      set4: [
+        {
+          id: 300,
+          name: "Grace Hall",
+          status: "Active",
+          email: "grace@example.com",
+          phone: "555-7890",
+        },
+      ],
+    };
+
+    let currentSet = "set1";
+    let filteredRows = [...datasets[currentSet]];
+    let displayedCount = 20;
+    let selectedRowId = null;
+
+    // Elements
+    const categoryButtons = document.querySelectorAll(
+      "[role='tablist'] button"
+    );
+    const tableBody = document.getElementById("table-body");
+    const tableContainer = document.getElementById("table-container");
+    const searchInput = document.getElementById("search-input");
+    const btnAdd = document.getElementById("btn-add");
+    const btnEdit = document.getElementById("btn-edit");
+    const btnDelete = document.getElementById("btn-delete");
+    const btnRefresh = document.getElementById("btn-refresh");
+    const noSelectionText = document.getElementById("no-selection-text");
+    const detailsContent = document.getElementById("details-content");
+    const detailId = document.getElementById("detail-id");
+    const detailName = document.getElementById("detail-name");
+    const detailStatus = document.getElementById("detail-status");
+    const detailEmail = document.getElementById("detail-email");
+    const detailPhone = document.getElementById("detail-phone");
+
+    // Edit modal
+    const editModal = document.getElementById("edit-modal");
+    const editInput = document.getElementById("edit-input");
+    const btnSaveEdit = document.getElementById("btn-save-edit");
+    const btnCloseEdit = document.getElementById("btn-close-edit");
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    let darkModeOn = true;
+
+    // Functions
+    function renderTable(reset = false) {
+      if (reset) displayedCount = 20;
+      tableBody.innerHTML = "";
+      const rowsToShow = filteredRows.slice(0, displayedCount);
+      for (const row of rowsToShow) {
+        const tr = document.createElement("tr");
+        tr.dataset.id = row.id;
+        tr.className =
+          row.id === selectedRowId
+            ? "bg-gray-700 cursor-pointer"
+            : "hover:bg-gray-700 cursor-pointer";
+        tr.innerHTML = `
+          <td class="px-4 py-3 border-b border-gray-600">${row.id}</td>
+          <td class="px-4 py-3 border-b border-gray-600">${row.name}</td>
+          <td class="px-4 py-3 border-b border-gray-600">${row.status}</td>
+        `;
+        tr.addEventListener("click", () => {
+          selectRow(row.id);
+        });
+        tableBody.appendChild(tr);
+      }
+    }
+
+    function selectRow(id) {
+      selectedRowId = id;
+      const row = filteredRows.find((r) => r.id === id);
+      // Highlight in table
+      document.querySelectorAll("tbody tr").forEach((tr) => {
+        tr.classList.toggle("bg-gray-700", tr.dataset.id == id);
+      });
+      // Show details
+      if (row) {
+        noSelectionText.style.display = "none";
+        detailsContent.classList.remove("hidden");
+        detailId.textContent = row.id;
+        detailName.textContent = row.name;
+        detailStatus.textContent = row.status;
+        detailEmail.textContent = row.email;
+        detailPhone.textContent = row.phone;
+        // Enable edit/delete buttons
+        btnEdit.disabled = false;
+        btnDelete.disabled = false;
+      }
+    }
+
+    function clearSelection() {
+      selectedRowId = null;
+      noSelectionText.style.display = "block";
+      detailsContent.classList.add("hidden");
+      btnEdit.disabled = true;
+      btnDelete.disabled = true;
+      document.querySelectorAll("tbody tr").forEach((tr) =>
+        tr.classList.remove("bg-gray-700")
+      );
+    }
+
+    function filterRows() {
+      const search = searchInput.value.trim().toLowerCase();
+      if (!search) {
+        filteredRows = [...datasets[currentSet]];
+      } else {
+        filteredRows = datasets[currentSet].filter(
+          (r) =>
+            String(r.id).includes(search) ||
+            r.name.toLowerCase().includes(search) ||
+            r.status.toLowerCase().includes(search) ||
+            r.email.toLowerCase().includes(search) ||
+            r.phone.toLowerCase().includes(search)
+        );
+      }
+      clearSelection();
+      renderTable(true);
+    }
+
+    // Infinite scroll
+    tableContainer.addEventListener("scroll", () => {
+      if (
+        tableContainer.scrollTop + tableContainer.clientHeight >=
+        tableContainer.scrollHeight - 50
+      ) {
+        if (displayedCount < filteredRows.length) {
+          displayedCount += 10;
+          renderTable();
+        }
+      }
+    });
+
+    // Category button clicks
+    categoryButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.dataset.set === currentSet) return;
+        currentSet = btn.dataset.set;
+        filteredRows = [...datasets[currentSet]];
+        searchInput.value = "";
+        categoryButtons.forEach((b) => {
+          b.classList.remove("bg-gray-600");
+          b.classList.add("bg-gray-700");
+          b.setAttribute("aria-selected", "false");
+        });
+        btn.classList.add("bg-gray-600");
+        btn.classList.remove("bg-gray-700");
+        btn.setAttribute("aria-selected", "true");
+        clearSelection();
+        renderTable(true);
+      });
+    });
+
+    // Search input
+    searchInput.addEventListener("input", () => {
+      filterRows();
+    });
+
+    // Refresh button
+    btnRefresh.addEventListener("click", () => {
+      filteredRows = [...datasets[currentSet]];
+      searchInput.value = "";
+      clearSelection();
+      renderTable(true);
+    });
+
+    // Delete button
+    btnDelete.addEventListener("click", () => {
+      if (selectedRowId === null) return;
+      const index = datasets[currentSet].findIndex(
+        (r) => r.id === selectedRowId
+      );
+      if (index !== -1) {
+        datasets[currentSet].splice(index, 1);
+        filterRows();
+      }
+    });
+
+    // Add button (adds a dummy row)
+    btnAdd.addEventListener("click", () => {
+      const newId = Math.max(...datasets[currentSet].map((r) => r.id)) + 1;
+      datasets[currentSet].push({
+        id: newId,
+        name: "New User " + newId,
+        status: "Pending",
+        email: `newuser${newId}@example.com`,
+        phone: "555-0000",
+      });
+      filterRows();
+    });
+
+    // Edit button opens modal to edit Name
+    btnEdit.addEventListener("click", () => {
+      if (selectedRowId === null) return;
+      const row = datasets[currentSet].find((r) => r.id === selectedRowId);
+      if (!row) return;
+      editInput.value = row.name;
+      editModal.classList.remove("hidden");
+      editInput.focus();
+    });
+
+    // Close modal
+    btnCloseEdit.addEventListener("click", () => {
+      editModal.classList.add("hidden");
+    });
+
+    // Save modal edit
+    btnSaveEdit.addEventListener("click", () => {
+      const newName = editInput.value.trim();
+      if (!newName) {
+        alert("Name cannot be empty.");
+        return;
+      }
+      const row = datasets[currentSet].find((r) => r.id === selectedRowId);
+      if (row) {
+        row.name = newName;
+        filterRows();
+        editModal.classList.add("hidden");
+        selectRow(selectedRowId);
+      }
+    });
+
+    // Close modal on outside click
+    editModal.addEventListener("click", (e) => {
+      if (e.target === editModal) {
+        editModal.classList.add("hidden");
+      }
+    });
+
+    // Dark mode toggle
+    darkModeToggle.addEventListener("click", () => {
+      darkModeOn = !darkModeOn;
+      if (darkModeOn) {
+        document.body.classList.remove("bg-gray-100", "text-gray-900");
+        document.body.classList.add("bg-gray-900", "text-gray-300");
+        darkModeToggle.innerHTML = '<i class="fa-regular fa-moon"></i>';
+      } else {
+        document.body.classList.remove("bg-gray-900", "text-gray-300");
+        document.body.classList.add("bg-gray-100", "text-gray-900");
+        darkModeToggle.innerHTML = '<i class="fa-regular fa-sun"></i>';
+      }
+    });
+
+    // Initialize first set button style
+    categoryButtons.forEach((btn) => {
+      if (btn.dataset.set === currentSet) {
+        btn.classList.add("bg-gray-600");
+        btn.classList.remove("bg-gray-700");
+        btn.setAttribute("aria-selected", "true");
+      }
+    });
+
+    // Initialize table on load
+    renderTable(true);
+  </script>
+</body>
+</html>

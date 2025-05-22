@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UI Prototype - Table & Details side-by-side with Top bar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #2f2f2f;
+      color: #ddd;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.light {
+      background-color: #e0e0e0;
+      color: #222;
+    }
+    /* ======== Top Bar ======== */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 20px;
+      background-color: #3b3b3b;
+      border-bottom: 1px solid #555;
+      user-select: none;
+    }
+    body.light .top-bar {
+      background-color: #ddd;
+      border-color: #ccc;
+    }
+
+    /* Category buttons on left */
+    .category-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .category-buttons button {
+      background-color: #666;
+      border: none;
+      color: #ddd;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .category-buttons button.active,
+    .category-buttons button:hover {
+      background-color: #888;
+    }
+    body.light .category-buttons button {
+      background-color: #aaa;
+      color: #222;
+    }
+    body.light .category-buttons button.active,
+    body.light .category-buttons button:hover {
+      background-color: #ccc;
+    }
+
+    /* Icons on right */
+    .icon-btn {
+      color: #ddd;
+      font-size: 20px;
+      cursor: pointer;
+      margin-left: 20px;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .icon-btn:hover {
+      color: #008cff;
+    }
+    body.light .icon-btn {
+      color: #555;
+    }
+    body.light .icon-btn:hover {
+      color: #0077cc;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: #e03e3e;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 12px;
+    }
+
+    /* ======= Main Content: Table + Details ======= */
+    .main-content {
+      display: flex;
+      height: calc(100vh - 50px); /* subtract top bar height */
+    }
+
+    /* Table area */
+    .table-area {
+      flex: 2;
+      border-right: 1px solid #555;
+      background-color: #3b3b3b;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s;
+    }
+    body.light .table-area {
+      background-color: #f7f7f7;
+      border-color: #ccc;
+    }
+
+    /* Toolbar above table */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background-color: #444;
+      border-bottom: 1px solid #555;
+      user-select: none;
+    }
+    body.light .toolbar {
+      background-color: #ddd;
+      border-color: #ccc;
+    }
+    .toolbar input[type="search"] {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: none;
+      font-size: 14px;
+    }
+    body.light .toolbar input[type="search"] {
+      background: white;
+      color: #222;
+      border: 1px solid #aaa;
+    }
+    .toolbar button {
+      margin-left: 10px;
+      background-color: #008cff;
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      user-select: none;
+    }
+    .toolbar button:hover {
+      background-color: #0077cc;
+    }
+    body.light .toolbar button {
+      background-color: #0077cc;
+    }
+    body.light .toolbar button:hover {
+      background-color: #005fa3;
+    }
+
+    /* Table scroll area */
+    .table-scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      background-color: #555;
+    }
+    body.light thead {
+      background-color: #ccc;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #444;
+      cursor: pointer;
+      user-select: none;
+    }
+    body.light th, body.light td {
+      border-bottom: 1px solid #bbb;
+    }
+    tr:hover {
+      background-color: #606060;
+    }
+    body.light tr:hover {
+      background-color: #ddd;
+    }
+    tr.selected {
+      background-color: #999999 !important;
+      color: #111;
+    }
+    body.light tr.selected {
+      background-color: #bbb !important;
+      color: #111;
+    }
+
+    /* Details panel */
+    .details-panel {
+      flex: 1;
+      background-color: #3a3a3a;
+      padding: 24px;
+      overflow-y: auto;
+      transition: background-color 0.3s, color 0.3s;
+      user-select: none;
+    }
+    body.light .details-panel {
+      background-color: #fafafa;
+      color: #111;
+    }
+    .details-panel h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    .details-content {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px 24px;
+      font-size: 14px;
+    }
+    .details-content p {
+      margin: 0;
+    }
+    .details-content p strong {
+      display: block;
+      color: #aaa;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    body.light .details-content p strong {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar: category buttons left, icons right -->
+  <div class="top-bar">
+    <div class="category-buttons" role="group" aria-label="Category Buttons">
+      <button data-set="set1" class="active" aria-pressed="true">Set 1</button>
+      <button data-set="set2" aria-pressed="false">Set 2</button>
+      <button data-set="set3" aria-pressed="false">Set 3</button>
+      <button data-set="set4" aria-pressed="false">Set 4</button>
+    </div>
+    <div>
+      <span class="icon-btn notification" title="Notifications" role="button" tabindex="0" aria-label="Notifications">
+        🔔<span class="notification-badge" aria-live="polite">3</span>
+      </span>
+      <span class="icon-btn" id="darkModeToggle" title="Toggle Dark/Light Mode" role="button" tabindex="0" aria-label="Toggle dark mode">
+        🌙
+      </span>
+    </div>
+  </div>
+
+  <!-- Main content: table + details -->
+  <div class="main-content">
+    <div class="table-area" role="region" aria-label="Data table">
+      <div class="toolbar">
+        <input type="search" id="searchInput" placeholder="Search..." aria-label="Search table" />
+        <button id="addBtn" title="Add">Add</button>
+        <button id="editBtn" title="Edit">Edit</button>
+        <button id="deleteBtn" title="Delete">Delete</button>
+        <button id="refreshBtn" title="Refresh">Refresh</button>
+      </div>
+      <div class="table-scroll">
+        <table id="dataTable" role="grid" aria-describedby="tableDescription">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="details-panel" role="region" aria-label="Details panel">
+      <h2>Details Panel</h2>
+      <div class="details-content">
+        <p>Select a row from the table to see details here.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const datasets = {
+    set1: [
+      {id: 1, name: "Alice Smith", status: "Active", email: "alice@example.com", phone: "(555) 123-4567"},
+      {id: 2, name: "Bob Johnson", status: "Pending", email: "bob@example.com", phone: "(555) 234-5678"},
+      {id: 3, name: "Carol King", status: "Inactive", email: "carol@example.com", phone: "(555) 345-6789"},
+      {id: 13, name: "Zoe Adams", status: "Active", email: "zoe@example.com", phone: "(555) 765-4321"},
+      {id: 14, name: "Yara Blue", status: "Pending", email: "yara@example.com", phone: "(555) 876-5432"},
+      {id: 15, name: "Xander Fox", status: "Inactive", email: "xander@example.com", phone: "(555) 987-6543"},
+      {id: 16, name: "Wendy Lane", status: "Active", email: "wendy@example.com", phone: "(555) 123-9876"},
+      {id: 17, name: "Victor Cruz", status: "Pending", email: "victor@example.com", phone: "(555) 456-7890"},
+    ],
+    set2: [
+      {id: 4, name: "David Brown", status: "Active", email: "david@example.com", phone: "(555) 222-3333"},
+      {id: 5, name: "Eva Green", status: "Inactive", email: "eva@example.com", phone: "(555) 333-4444"},
+      {id: 6, name: "Frank Harris", status: "Pending", email: "frankh@example.com", phone: "(555) 444-5555"},
+    ],
+    set3: [
+      {id: 7, name: "George Miller", status: "Active", email: "george@example.com", phone: "(555) 555-6666"},
+      {id: 8, name: "Hannah Wilson", status: "Inactive", email: "hannah@example.com", phone: "(555) 666-7777"},
+      {id: 9, name: "Ian Thomas", status: "Pending", email: "ian@example.com", phone: "(555) 777-8888"},
+    ],
+    set4: [
+      {id: 10, name: "Jackie Martin", status: "Active", email: "jackie@example.com", phone: "(555) 888-9999"},
+      {id: 11, name: "Kevin White", status: "Inactive", email: "kevin@example.com", phone: "(555) 999-0000"},
+      {id: 12, name: "Linda Harris", status: "Pending", email: "linda@example.com", phone: "(555) 000-1111"},
+    ],
+  };
+
+  const tableBody = document.querySelector("#dataTable tbody");
+  const searchInput = document.getElementById("searchInput");
+  const categoryButtons = document.querySelectorAll(".category-buttons button");
+  const detailsContent = document.querySelector(".details-content");
+
+  let currentSet = "set1";
+  let filteredRows = [];
+  let displayedCount = 0;
+  const PAGE_SIZE = 5;
+
+  function renderTable() {
+    tableBody.innerHTML = "";
+    const rowsToShow = filteredRows.slice(0, displayedCount);
+    rowsToShow.forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.dataset.id = row.id;
+      tr.dataset.name = row.name;
+      tr.dataset.status = row.status;
+      tr.dataset.email = row.email;
+      tr.dataset.phone = row.phone;
+
+      tr.innerHTML = `
+        <td>${row.id}</td>
+        <td>${row.name}</td>
+        <td>${row.status}</td>
+      `;
+
+      tr.addEventListener("click", () => {
+        const prevSelected = tableBody.querySelector("tr.selected");
+        if (prevSelected) prevSelected.classList.remove("selected");
+        tr.classList.add("selected");
+        showDetails(tr);
+      });
+
+      tableBody.appendChild(tr);
+    });
+  }
+
+  function showDetails(row) {
+    detailsContent.innerHTML = `
+      <p><strong>ID</strong> ${row.dataset.id}</p>
+      <p><strong>Name</strong> ${row.dataset.name}</p>
+      <p><strong>Status</strong> ${row.dataset.status}</p>
+      <p><strong>Email</strong> ${row.dataset.email}</p>
+      <p><strong>Phone</strong> ${row.dataset.phone}</p>
+    `;
+  }
+
+  function filterRows() {
+    const search = searchInput.value.toLowerCase();
+    filteredRows = datasets[currentSet].filter(
+      (row) =>
+        row.name.toLowerCase().includes(search) ||
+        row.status.toLowerCase().includes(search) ||
+        String(row.id).includes(search)
+    );
+    displayedCount = Math.min(PAGE_SIZE, filteredRows.length);
+    renderTable();
+    if (filteredRows.length === 0) {
+      detailsContent.innerHTML = "<p>No matching results.</p>";
+    } else {
+      detailsContent.innerHTML = "<p>Select a row from the table to see details here.</p>";
+    }
+  }
+
+  categoryButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.set === currentSet) return;
+      categoryButtons.forEach((b) => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      button.classList.add("active");
+      button.setAttribute("aria-pressed", "true");
+
+      currentSet = button.dataset.set;
+      searchInput.value = "";
+      filteredRows = [...datasets[currentSet]];
+      displayedCount = Math.min(PAGE_SIZE, filteredRows.length);
+      renderTable();
+      detailsContent.innerHTML = "<p>Select a row from the table to see details here.</p>";
+    });
+  });
+
+  searchInput.addEventListener("input", filterRows);
+
+  // Infinite scroll on table scroll container
+  const tableScroll = document.querySelector(".table-scroll");
+  tableScroll.addEventListener("scroll", () => {
+    const { scrollTop, scrollHeight, clientHeight } = tableScroll;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      if (displayedCount < filteredRows.length) {
+        displayedCount = Math.min(displayedCount + PAGE_SIZE, filteredRows.length);
+        renderTable();
+      }
+    }
+  });
+
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  darkModeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light");
+  });
+
+  // Initialize
+  filteredRows = [...datasets[currentSet]];
+  displayedCount = Math.min(PAGE_SIZE, filteredRows.length);
+  renderTable();
+</script>
+</body>
+</html>
